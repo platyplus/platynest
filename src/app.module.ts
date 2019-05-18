@@ -1,16 +1,13 @@
-// NestJS modules
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
-// Common modules
 import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
-// Entity modules
 import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
-// Entities
 import { Recipe } from './recipes/recipe.entity';
 import { User } from './users/user.entity';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
@@ -36,6 +33,7 @@ import { User } from './users/user.entity';
     CommonModule,
     AuthModule,
     UsersModule,
+    ConfigModule,
   ],
 })
 export class ApplicationModule {}
