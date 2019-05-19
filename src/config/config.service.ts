@@ -3,13 +3,15 @@ import * as Joi from 'joi';
 import * as fs from 'fs';
 import { Recipe } from '../recipes/recipe.entity';
 import { User } from '../users/user.entity';
-import { UnionType } from 'typescript';
+
+/**
+ * Declare into ENTITIES the modules need to be taken into account by TypeORM
+ */
+const ENTITIES = [Recipe, User];
 
 export interface EnvConfig {
   [key: string]: string;
 }
-
-const ENTITIES = [Recipe, User];
 
 export class ConfigService {
   private readonly envConfig: EnvConfig;
@@ -101,5 +103,9 @@ export class ConfigService {
         expiresIn: 3600,
       },
     };
+  }
+
+  get development(): boolean {
+    return this.envConfig.NODE_ENV === 'development';
   }
 }
