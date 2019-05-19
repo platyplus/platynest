@@ -20,8 +20,8 @@ type Document {
 scalar Json
 
 type Mutation {
+  upsertUser(input: UserInput!): User!
   addRecipe(newRecipeData: NewRecipeInput!): Recipe!
-  removeRecipe(id: String!): Boolean!
 }
 
 input NewRecipeInput {
@@ -54,6 +54,7 @@ type Resource {
 }
 
 type Subscription {
+  userAdded: User!
   recipeAdded: Recipe!
 }
 
@@ -62,4 +63,13 @@ type User {
   createdAt: DateTime!
   updatedAt: DateTime!
   email: String!
+  firstName: String
+  lastName: String
+  typename: String!
+}
+
+input UserInput {
+  email: String!
+  firstName: String
+  lastName: String
 }

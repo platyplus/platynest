@@ -1,17 +1,19 @@
-import { IsOptional, Length, MaxLength } from 'class-validator';
+import { IsOptional, Length, IsEmail } from 'class-validator';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
 export class UserInput {
   @Field()
-  @MaxLength(30)
-  title: string;
+  @IsEmail()
+  email: string;
 
   @Field({ nullable: true })
   @IsOptional()
-  @Length(30, 255)
-  description?: string;
+  @Length(2, 255)
+  firstName?: string;
 
-  @Field(type => [String])
-  ingredients: string[];
+  @Field({ nullable: true })
+  @IsOptional()
+  @Length(2, 255)
+  lastName?: string;
 }

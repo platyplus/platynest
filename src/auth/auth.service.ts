@@ -42,7 +42,7 @@ export class AuthService {
 
   async signUp(payload: SignUpDto): Promise<string> {
     const user = plainToClass(User, payload);
-    await this.usersService.saveUser(user);
+    await this.usersService.saveProfile(user);
     return this.sign(user);
   }
 }
