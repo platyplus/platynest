@@ -5,22 +5,13 @@ import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
-import { Recipe } from './recipes/recipe.entity';
-import { User } from './users/user.entity';
 import { ConfigModule } from './config/config.module';
-
+import { TypeOrmOptions } from './typeorm.options';
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '',
-      database: 'postgres',
-      entities: [Recipe, User],
-      synchronize: true,
-      keepConnectionAlive: true,
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigModule],
+      useClass: TypeOrmOptions,
     }),
     GraphQLModule.forRoot({
       installSubscriptionHandlers: true,

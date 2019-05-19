@@ -15,12 +15,7 @@ import { ConfigService } from '../config/config.service';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secretOrPrivateKey: configService.secret,
-        signOptions: {
-          expiresIn: 3600,
-        },
-      }),
+      useFactory: async (config: ConfigService) => config.jwt,
       inject: [ConfigService],
     }),
     UsersModule,

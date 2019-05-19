@@ -24,12 +24,9 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
   },
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin(), new webpack.WatchIgnorePlugin([/\.js$/, /\.d\.ts$/])],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'server.js'
   }
-  // node: {
-  //   __dirname: false
-  // }
 }
