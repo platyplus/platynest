@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity, BeforeUpdate, BeforeInsert } from 'typeorm';
-import { Resource } from '../common/entities/resource.entity';
+import { Resource } from '../common/object-types/resource.type';
 import { Exclude } from 'class-transformer';
 import { genSalt, hash } from 'bcryptjs';
 

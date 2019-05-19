@@ -31,6 +31,8 @@ input NewRecipeInput {
 }
 
 type Query {
+  user(id: String!): User!
+  users: [User!]!
   recipe(id: String!): Recipe!
   recipes(skip: Int = 0, take: Int = 25): [Recipe!]!
 }

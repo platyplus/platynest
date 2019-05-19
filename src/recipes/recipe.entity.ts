@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
-import { Document } from '../common/entities/document.entity';
+import { Document } from '../common/object-types/document.type';
 import { JsonScalar } from '../common/scalars/json.scalar';
 
 @ObjectType()

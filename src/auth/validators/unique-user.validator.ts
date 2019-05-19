@@ -5,14 +5,13 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { UsersService } from '../../users/users.service';
+import { UserService } from '../../users/user.service';
 import { Injectable } from '@nestjs/common';
 
-@ValidatorConstraint({ name: 'IsUserAlreadyExists', async: true })
+@ValidatorConstraint({ name: 'UserAlreadyExists', async: true })
 @Injectable()
-export class IsUserAlreadyExistsConstraint
-  implements ValidatorConstraintInterface {
-  constructor(private readonly usersService: UsersService) {}
+export class UniqueUserConstraint implements ValidatorConstraintInterface {
+  constructor(private readonly usersService: UserService) {}
 
   async validate(email: any, args: ValidationArguments) {
     const user = await this.usersService.findOneByEmail(email);
@@ -27,7 +26,7 @@ export class IsUserAlreadyExistsConstraint
   }
 }
 
-export const IsUserAlreadyExists = (validationOptions?: ValidationOptions) => (
+export const UniqueUser = (validationOptions?: ValidationOptions) => (
   object: object,
   propertyName: string,
 ) => {
@@ -36,6 +35,6 @@ export const IsUserAlreadyExists = (validationOptions?: ValidationOptions) => (
     propertyName,
     options: validationOptions,
     constraints: [],
-    validator: IsUserAlreadyExistsConstraint,
+    validator: UniqueUserConstraint,
   });
 };

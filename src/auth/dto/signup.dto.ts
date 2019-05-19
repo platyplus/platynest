@@ -1,6 +1,6 @@
 import { SignInDto } from './signin.dto';
 import { IsSameAs } from '../../common/validators/is-same-as';
-import { IsUserAlreadyExists } from '../validators/user-exists';
+import { UniqueUser } from '../validators/unique-user.validator';
 
 export class SignUpDto extends SignInDto {
   @IsSameAs('password', {
@@ -8,6 +8,6 @@ export class SignUpDto extends SignInDto {
   })
   confirmPassword: string;
 
-  @IsUserAlreadyExists()
+  @UniqueUser()
   email: string;
 }

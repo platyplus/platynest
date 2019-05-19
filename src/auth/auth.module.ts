@@ -3,10 +3,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
-import { UsersModule } from '../users/users.module';
+import { UserModule } from '../users/user.module';
 import { AuthController } from './auth.controller';
-import { UsersService } from '../users/users.service';
-import { IsUserAlreadyExistsConstraint } from './validators/user-exists';
+import { UserService } from '../users/user.service';
+import { UniqueUserConstraint } from './validators/unique-user.validator';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 
@@ -18,14 +18,9 @@ import { ConfigService } from '../config/config.service';
       useFactory: async (config: ConfigService) => config.jwt,
       inject: [ConfigService],
     }),
-    UsersModule,
+    UserModule,
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    UsersService,
-    IsUserAlreadyExistsConstraint,
-  ],
+  providers: [AuthService, JwtStrategy, UserService, UniqueUserConstraint],
 })
 export class AuthModule {}
