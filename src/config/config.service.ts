@@ -1,13 +1,12 @@
 import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import * as fs from 'fs';
-import { Recipe } from '../recipes/recipe.entity';
 import { User } from '../users/user.entity';
 
 /**
  * Declare into ENTITIES the modules need to be taken into account by TypeORM
  */
-const ENTITIES = [Recipe, User];
+const ENTITIES = [User];
 
 export interface EnvConfig {
   [key: string]: string;

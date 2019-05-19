@@ -1,10 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserArgs } from './user.args';
 import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UserInput } from './user.input';
+import { IsAuthenticated } from '../auth/guards/authenticated';
+import { RoleInterceptor } from './role.interceptor';
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
 @Injectable()
@@ -19,6 +26,7 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   }
 
+  @UseGuards(IsAuthenticated)
   @Query(type => User, { name: `user` })
   async findOneById(@Args('id') id: string): Promise<User> {
     const user = await this.userRepository.findOne(id);
@@ -28,6 +36,8 @@ export class UserService {
     return user;
   }
 
+  @UseGuards(IsAuthenticated)
+  @UseInterceptors(RoleInterceptor) // TODO: split into RoleInterceptor and Owner/ContributorInterceptor?
   @Query(type => [User], { name: `users` })
   async find(args: UserArgs): Promise<User[]> {
     return await this.userRepository.find(args);

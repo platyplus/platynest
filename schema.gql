@@ -8,54 +8,19 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
-type Document {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  title: String!
-  description: String
-}
-
-"""Json custom scalar type"""
-scalar Json
-
 type Mutation {
   upsertUser(input: UserInput!): User!
-  addRecipe(newRecipeData: NewRecipeInput!): Recipe!
-}
-
-input NewRecipeInput {
-  title: String!
-  description: String
-  ingredients: [String!]!
 }
 
 type Query {
   user(id: String!): User!
   users: [User!]!
-  recipe(id: String!): Recipe!
-  recipes(skip: Int = 0, take: Int = 25): [Recipe!]!
-}
-
-type Recipe {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  title: String!
-  description: String
-  ingredients: [String!]!
-  jsonTest: Json!
 }
 
 type Resource {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-}
-
-type Subscription {
-  userAdded: User!
-  recipeAdded: Recipe!
 }
 
 type User {
@@ -65,7 +30,6 @@ type User {
   email: String!
   firstName: String
   lastName: String
-  typename: String!
 }
 
 input UserInput {

@@ -1,30 +1,31 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity, BeforeUpdate, BeforeInsert } from 'typeorm';
 import { Resource } from '../common/object-types/resource.type';
-import { Exclude } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { genSalt, hash } from 'bcryptjs';
-import { IsEmail } from 'class-validator';
 
 @ObjectType()
 @Entity()
+@Exclude()
 export class User extends Resource {
   @Field()
   @Column({ unique: true })
+  @Expose() // TODO: do not send the entire user if not authorized => filter at typeorm level?
   email: string;
 
-  @Exclude()
   password: string;
 
-  @Exclude()
   @Column({ nullable: true })
   hashedPassword: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
+  @Expose({ groups: ['service', 'admin', 'owner'] })
   firstName: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
+  @Expose({ groups: ['service', 'admin', 'owner'] })
   lastName: string;
 
   @BeforeInsert()

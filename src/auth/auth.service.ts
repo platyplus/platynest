@@ -4,7 +4,7 @@ import { UserService } from '../users/user.service';
 import { SignInDto } from './dto/signin.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { User } from '../users/user.entity';
-import { plainToClass, classToPlain } from 'class-transformer';
+import { plainToClass, classToPlain, classToClass } from 'class-transformer';
 import { compare } from 'bcryptjs';
 import { InvalidCredentialsException } from './exceptions/invalid-credentials.exception';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   sign(user: User) {
-    const payload = classToPlain(user) as JwtPayload;
+    const payload = classToPlain(user, { groups: ['service'] }) as JwtPayload;
     return this.jwtService.sign(payload);
   }
 
@@ -25,7 +25,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
-    return user;
+    return classToClass(user, { groups: ['service'] }); // filters only the properties services could see
   }
 
   async signIn(payload: SignInDto): Promise<string> {
