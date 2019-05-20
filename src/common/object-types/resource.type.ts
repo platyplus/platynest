@@ -1,19 +1,23 @@
 import { ObjectType, ID, Field } from 'type-graphql';
 import { Column, Entity, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
+import { Expose } from 'class-transformer';
 
-@ObjectType()
 @Entity()
+@ObjectType({ isAbstract: true })
 export abstract class Resource {
   @PrimaryGeneratedColumn('uuid')
   @Field(type => ID)
+  @Expose()
   id: string;
 
-  @Field()
   @Column({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Field()
+  @Expose()
   createdAt: Date;
 
-  @Field()
   @Column({ type: 'timestamptz', nullable: true })
+  @Field()
+  @Expose()
   updatedAt: Date;
 
   @BeforeUpdate()

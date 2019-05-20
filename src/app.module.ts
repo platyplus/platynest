@@ -7,6 +7,7 @@ import { UserModule } from './users/user.module';
 import { ConfigModule } from './config/config.module';
 import { TypeOrmOptions } from './typeorm.options';
 import { GraphQLOptions } from './graphql.options';
+import { OrgUnitModule } from './org-unit/org-unit.module';
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -20,6 +21,7 @@ import { GraphQLOptions } from './graphql.options';
     CommonModule,
     AuthModule,
     UserModule,
+    OrgUnitModule,
     ConfigModule,
   ],
 })

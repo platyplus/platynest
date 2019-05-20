@@ -1,19 +1,18 @@
 import { ObjectType, ID, Field } from 'type-graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Resource } from './resource.type';
+import { Expose } from 'class-transformer';
 
-@ObjectType()
-@Entity()
+@Entity({ orderBy: { title: 'ASC' } })
+@ObjectType({ isAbstract: true })
 export abstract class Document extends Resource {
-  @PrimaryGeneratedColumn('uuid')
-  @Field(type => ID)
-  id: string;
-
   @Column({ length: 500 })
   @Field()
+  @Expose()
   title: string;
 
-  @Field({ nullable: true })
   @Column('text')
+  @Field({ nullable: true })
+  @Expose()
   description?: string;
 }

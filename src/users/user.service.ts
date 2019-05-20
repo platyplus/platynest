@@ -12,6 +12,7 @@ import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UserInput } from './user.input';
 import { IsAuthenticated } from '../auth/guards/authenticated';
 import { RoleInterceptor } from './role.interceptor';
+import { Profile } from '../auth/decorators/profile.decorator';
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
 @Injectable()
@@ -39,7 +40,8 @@ export class UserService {
   @UseGuards(IsAuthenticated)
   @UseInterceptors(RoleInterceptor) // TODO: split into RoleInterceptor and Owner/ContributorInterceptor?
   @Query(type => [User], { name: `users` })
-  async find(args: UserArgs): Promise<User[]> {
+  async find(@Profile() user: User, args: UserArgs): Promise<User[]> {
+    console.log(user);
     return await this.userRepository.find(args);
   }
 

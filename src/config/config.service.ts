@@ -2,11 +2,12 @@ import * as dotenv from 'dotenv';
 import * as Joi from 'joi';
 import * as fs from 'fs';
 import { User } from '../users/user.entity';
+import { OrgUnit } from '../org-unit/org-unit.entity';
 
 /**
  * Declare into ENTITIES the modules need to be taken into account by TypeORM
  */
-const ENTITIES = [User];
+const ENTITIES = [User, OrgUnit];
 
 export interface EnvConfig {
   [key: string]: string;

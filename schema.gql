@@ -10,17 +10,30 @@ scalar DateTime
 
 type Mutation {
   upsertUser(input: UserInput!): User!
+  upsertOrgUnit(input: OrgUnitInput!): OrgUnit!
+}
+
+type OrgUnit {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String
+  children: [OrgUnit!]!
+  parent: OrgUnit!
+}
+
+input OrgUnitInput {
+  id: ID
+  title: String!
+  description: String
 }
 
 type Query {
   user(id: String!): User!
   users: [User!]!
-}
-
-type Resource {
-  id: ID!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  orgUnit(id: String!): OrgUnit!
+  orgUnits: [OrgUnit!]!
 }
 
 type User {
