@@ -100,7 +100,7 @@ export class ConfigService {
     return {
       secretOrPrivateKey: this.secret,
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: 3600, // TODO: environment variable
       },
     };
   }

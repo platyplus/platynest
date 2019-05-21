@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrgUnit } from './org-unit.entity';
-import { OrgUnitService } from './org-unit.service';
+import { OrgUnitResolver } from './org-unit.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([OrgUnit])],
-  providers: [OrgUnitService],
+  providers: [OrgUnitResolver],
 })
 export class OrgUnitModule {}

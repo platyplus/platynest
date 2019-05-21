@@ -11,7 +11,7 @@ import { JwtPayload } from './interfaces/jwt-payload.interface';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UserService,
+    private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -21,7 +21,7 @@ export class AuthService {
   }
 
   async validateUser(payload: JwtPayload): Promise<User> {
-    const user = await this.usersService.findOneByEmail(payload.email);
+    const user = await this.userService.findOneByEmail(payload.email);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   async signIn(payload: SignInDto): Promise<string> {
-    const user = await this.usersService.findOneByEmail(payload.email);
+    const user = await this.userService.findOneByEmail(payload.email);
     if (!user) {
       throw new InvalidCredentialsException();
     }
@@ -42,7 +42,7 @@ export class AuthService {
 
   async signUp(payload: SignUpDto): Promise<string> {
     const user = plainToClass(User, payload);
-    await this.usersService.saveProfile(user);
+    await this.userService.saveProfile(user);
     return this.sign(user);
   }
 }

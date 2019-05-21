@@ -1,66 +1,26 @@
-import {
-  Injectable,
-  NotFoundException,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
-import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
-import { UserInput } from './user.input';
-import { IsAuthenticated } from '../auth/guards/authenticated';
-import { RoleInterceptor } from './role.interceptor';
-import { Profile } from '../auth/decorators/profile.decorator';
-// const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
+/**
+ * User service, for internal use only.
+ * TODO: move into the auth module??
+ */
 @Injectable()
-@Resolver(of => User)
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly repository: Repository<User>,
   ) {}
 
   async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({ where: { email } });
+    return await this.repository.findOne({ where: { email } });
   }
 
-  @UseGuards(IsAuthenticated)
-  @Query(type => User, { name: `user` })
-  async findOneById(@Args('id') id: string): Promise<User> {
-    const user = await this.userRepository.findOne(id);
-    if (!user) {
-      throw new NotFoundException(id);
-    }
-    return user;
-  }
-
-  @UseGuards(IsAuthenticated)
-  @UseInterceptors(RoleInterceptor) // TODO: split into RoleInterceptor and Owner/ContributorInterceptor?
-  @Query(type => [User], { name: `users` })
-  async find(@Profile() user: User): Promise<User[]> {
-    console.log(user);
-    return await this.userRepository.find();
-  }
-
-  @Mutation(returns => User, { name: 'upsertUser' })
-  async save(@Args('input') userInput: UserInput): Promise<User> {
-    let user = await this.userRepository.findOne({
-      where: { email: userInput.email },
-    });
-    if (!user) {
-      user = new User();
-    }
-    Object.assign(user, userInput); // TODO: deep clone
-    user = await this.userRepository.save(user);
-    // pubSub.publish('userAdded', { userAdded: user });
-    return user;
-  }
-
-  // TODO: merge with the above? and allow only authenticated users to change password, authorizations...
+  // TODO: allow only authenticated users to change password, authorizations...
   async saveProfile(user: User): Promise<User> {
-    return await this.userRepository.save(user);
+    return await this.repository.save(user);
   }
 
   // @Subscription(returns => User)

@@ -10,7 +10,11 @@ import { genSalt, hash } from 'bcryptjs';
 export class User extends Resource {
   @Field()
   @Column({ unique: true })
-  @Expose() // TODO: do not send the entire user if not authorized => filter at typeorm level?
+  @Expose() // TODO: do not send the entire user if not authorized => filter typeorm.find() level
+  /** TODO:
+   * add a 'where' typeorm filter based on the class-validator decorators of the entity
+   * Ideally: surcharger la classe Repository de TypeOrm
+   */
   email: string;
 
   password: string;
@@ -25,7 +29,7 @@ export class User extends Resource {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  @Expose({ groups: ['service', 'admin', 'owner'] })
+  @Expose({ groups: ['service', 'admin'] })
   lastName: string;
 
   @BeforeInsert()

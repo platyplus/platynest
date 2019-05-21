@@ -1,10 +1,11 @@
-import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
-import { ClassType, ID } from 'type-graphql';
 import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
 import { Repository, FindConditions, FindManyOptions } from 'typeorm';
-import { IsAuthenticated } from '../../auth/guards/authenticated';
+import { ClassType, ID } from 'type-graphql';
 import { upperFirst } from 'lodash';
+import { IsAuthenticated } from '../../auth/guards/authenticated';
+// const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
 export interface BaseResolverOptions {
   /**
@@ -80,6 +81,11 @@ export function createBaseResolver<T extends ClassType, U>(
       // pubSub.publish('userAdded', { userAdded: user });
       return item;
     }
+
+    // @Subscription(returns => User)
+    // userAdded() {
+    //   return pubSub.asyncIterator('userAdded');
+    // }
   }
   return BaseResolver as any;
 }
