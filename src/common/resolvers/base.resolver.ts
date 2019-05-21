@@ -37,13 +37,13 @@ export function createBaseResolver<T extends ClassType, U>(
 
   @Injectable()
   @Resolver(() => objectTypeCls, { isAbstract: true })
+  @UseGuards(IsAuthenticated)
   abstract class BaseResolver {
     constructor(
       @InjectRepository(objectTypeCls)
       private readonly repository: Repository<T>,
     ) {}
 
-    @UseGuards(IsAuthenticated)
     @Query(() => objectTypeCls, { name: `${name}` })
     async findOneById(
       @Args({ name: 'id', type: () => ID }) id: string,
@@ -55,7 +55,6 @@ export function createBaseResolver<T extends ClassType, U>(
       return item;
     }
 
-    @UseGuards(IsAuthenticated)
     @Query(() => [objectTypeCls], { name: `${pluralName()}` })
     async find(args: FindManyOptions<T> | FindConditions<T>): Promise<T[]> {
       // TODO: arguments are not working

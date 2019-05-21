@@ -7,7 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { UserArgs } from './user.args';
 import { Args, Resolver, Query, Mutation } from '@nestjs/graphql';
 import { UserInput } from './user.input';
 import { IsAuthenticated } from '../auth/guards/authenticated';
