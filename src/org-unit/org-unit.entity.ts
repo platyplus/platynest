@@ -9,12 +9,12 @@ import { Exclude, Expose } from 'class-transformer';
 @Exclude()
 export class OrgUnit extends Document {
   @TreeChildren()
-  @Field(type => [OrgUnit])
+  @Field(type => [OrgUnit], { nullable: true })
   @Expose()
   children: OrgUnit[];
 
   @TreeParent()
-  @Field(type => OrgUnit)
+  @Field(type => OrgUnit, { nullable: true })
   @Expose()
   parent: OrgUnit;
 }

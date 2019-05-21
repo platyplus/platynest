@@ -40,9 +40,9 @@ export class UserService {
   @UseGuards(IsAuthenticated)
   @UseInterceptors(RoleInterceptor) // TODO: split into RoleInterceptor and Owner/ContributorInterceptor?
   @Query(type => [User], { name: `users` })
-  async find(@Profile() user: User, args: UserArgs): Promise<User[]> {
+  async find(@Profile() user: User): Promise<User[]> {
     console.log(user);
-    return await this.userRepository.find(args);
+    return await this.userRepository.find();
   }
 
   @Mutation(returns => User, { name: 'upsertUser' })

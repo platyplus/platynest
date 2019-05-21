@@ -15,3 +15,10 @@ Annotations order:
 1. TypeOrm
 2. Type-graphql annotations second
 3. Serialization options e.g. @Expose(), Exlude()
+
+### Input types
+
+Don't forget:
+
+- @IsNotEmpty() for mandatory fields - it has to be explicit. Weird
+- @IsOptional() for optional fields

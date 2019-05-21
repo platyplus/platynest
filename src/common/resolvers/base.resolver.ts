@@ -1,13 +1,17 @@
-import { Query } from '@nestjs/graphql';
-import { Resolver, Int, ClassType, Arg } from 'type-graphql';
-import { Inject } from '@nestjs/common';
-
+import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
+import { ClassType } from 'type-graphql';
+import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeepPartial } from 'typeorm';
+import { IsAuthenticated } from '../../auth/guards/authenticated';
+import { upperFirst } from 'lodash';
+// const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 /**
  *
- * @param suffix
+ * @param name
  * @param objectTypeCls
  *
- * const PersonBaseResolver = createBaseResolver("person", Person);
+ * const PersonBaseResolver = createBaseResolver("person", Person, PersonInput);
  * @Resolver(of => Person)
  * export class PersonResolver extends PersonBaseResolver {
  *   // ...
@@ -15,24 +19,56 @@ import { Inject } from '@nestjs/common';
  *
  * See: https://typegraphql.ml/docs/inheritance.html
  */
-export function createBaseResolver<T extends ClassType>(
-  suffix: string,
+export function createBaseResolver<T extends ClassType, U>(
+  name: string,
   objectTypeCls: T,
+  inputTypeCls: U,
 ) {
-  // @Resolver({ isAbstract: true })
-  @Resolver() // TODO: import from @nestjs/graphql or type-graphql?
+  @Injectable()
+  @Resolver(() => objectTypeCls, { isAbstract: true })
   abstract class BaseResolver {
-    protected items: T[] = [];
-    constructor(private readonly repository: any) {}
+    constructor(
+      @InjectRepository(objectTypeCls)
+      private readonly repository: Repository<T>,
+    ) {}
 
-    @Query(type => [objectTypeCls], { name: `getAll${suffix}` })
-    async getAll(@Arg('first', type => Int) first: number): Promise<T[]> {
-      // console.log(this.repository);
-      console.log('Abstract getAll');
-      return [];
-      // return this.repository.findAll();
+    @UseGuards(IsAuthenticated)
+    @Query(() => objectTypeCls, { name: `${name}` })
+    async findOneById(@Args('id') id: string): Promise<T> {
+      const item = await this.repository.findOne(id);
+      if (!item) {
+        throw new NotFoundException(id);
+      }
+      return item;
+    }
+
+    @UseGuards(IsAuthenticated)
+    @Query(() => [objectTypeCls], { name: `${name}s` })
+    async find(args): Promise<T[]> {
+      // TODO: arguments are not working
+      return await this.repository.find(args);
+    }
+
+    @Mutation(() => objectTypeCls, { name: `upsert${upperFirst(name)}` })
+    async save(
+      @Args({ name: 'input', type: () => inputTypeCls })
+      itemInput,
+    ) {
+      // TODO: different validion when insert and when update
+      let item = new objectTypeCls();
+      // const genericInput = plainToClass(inputTypeCls, input);
+      // console.log(genericInput);
+      if (itemInput.id) {
+        /* We need to get the initial data if it exists so it is correclty returned.
+        The this.repository.save() does not retrieve the properties that
+        have not been changed in the input */
+        item = (await this.repository.findOne(itemInput.id)) || item;
+      }
+      Object.assign(item, itemInput);
+      item = await this.repository.save((item as unknown) as DeepPartial<T>);
+      // pubSub.publish('userAdded', { userAdded: user });
+      return item;
     }
   }
-
   return BaseResolver as any;
 }
