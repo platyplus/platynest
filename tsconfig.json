@@ -13,7 +13,13 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "lib": ["esnext.asynciterable", "es6", "dom"]
+    "lib": [
+      "esnext.asynciterable",
+      "es6",
+      "dom"
+    ]
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

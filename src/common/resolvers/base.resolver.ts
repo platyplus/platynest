@@ -1,10 +1,18 @@
 import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
-import { ClassType } from 'type-graphql';
+import { ClassType, ID } from 'type-graphql';
 import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeepPartial } from 'typeorm';
+import { Repository, FindConditions, FindManyOptions } from 'typeorm';
 import { IsAuthenticated } from '../../auth/guards/authenticated';
 import { upperFirst } from 'lodash';
+
+export interface BaseResolverOptions {
+  /**
+   * Specifies the plural
+   */
+  plural?: string;
+}
+
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 /**
  *
@@ -23,7 +31,10 @@ export function createBaseResolver<T extends ClassType, U>(
   name: string,
   objectTypeCls: T,
   inputTypeCls: U,
+  options?: BaseResolverOptions,
 ) {
+  const pluralName = () => (options && options.plural) || `${name}s`;
+
   @Injectable()
   @Resolver(() => objectTypeCls, { isAbstract: true })
   abstract class BaseResolver {
@@ -34,7 +45,9 @@ export function createBaseResolver<T extends ClassType, U>(
 
     @UseGuards(IsAuthenticated)
     @Query(() => objectTypeCls, { name: `${name}` })
-    async findOneById(@Args('id') id: string): Promise<T> {
+    async findOneById(
+      @Args({ name: 'id', type: () => ID }) id: string,
+    ): Promise<T> {
       const item = await this.repository.findOne(id);
       if (!item) {
         throw new NotFoundException(id);
@@ -43,8 +56,8 @@ export function createBaseResolver<T extends ClassType, U>(
     }
 
     @UseGuards(IsAuthenticated)
-    @Query(() => [objectTypeCls], { name: `${name}s` })
-    async find(args): Promise<T[]> {
+    @Query(() => [objectTypeCls], { name: `${pluralName()}` })
+    async find(args: FindManyOptions<T> | FindConditions<T>): Promise<T[]> {
       // TODO: arguments are not working
       return await this.repository.find(args);
     }
@@ -52,20 +65,19 @@ export function createBaseResolver<T extends ClassType, U>(
     @Mutation(() => objectTypeCls, { name: `upsert${upperFirst(name)}` })
     async save(
       @Args({ name: 'input', type: () => inputTypeCls })
-      itemInput,
+      input,
     ) {
       // TODO: different validion when insert and when update
       let item = new objectTypeCls();
-      // const genericInput = plainToClass(inputTypeCls, input);
-      // console.log(genericInput);
-      if (itemInput.id) {
+      if (input.id) {
         /* We need to get the initial data if it exists so it is correclty returned.
         The this.repository.save() does not retrieve the properties that
         have not been changed in the input */
-        item = (await this.repository.findOne(itemInput.id)) || item;
+        item =
+          (await this.repository.findOne({ where: { id: input.id } })) || item;
       }
-      Object.assign(item, itemInput);
-      item = await this.repository.save((item as unknown) as DeepPartial<T>);
+      Object.assign(item, input);
+      item = await this.repository.save(item);
       // pubSub.publish('userAdded', { userAdded: user });
       return item;
     }
