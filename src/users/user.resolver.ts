@@ -5,7 +5,7 @@ import { UserInput } from './user.input';
 import { RoleInterceptor } from './role.interceptor';
 import { createBaseResolver } from '../common/resolvers/base.resolver';
 import { Profile } from '../auth/decorators/profile.decorator';
-import { PaginationArgs } from 'src/common/object-types/pagination.input';
+import { PaginationArgs } from '../common/object-types/pagination.input';
 
 const UserBaseResolver = createBaseResolver('user', User, UserInput);
 

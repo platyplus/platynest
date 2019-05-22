@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Tree, TreeParent, TreeChildren } from 'typeorm';
+import { Entity, Tree, TreeParent, TreeChildren } from 'typeorm';
 import { Document } from '../common/object-types/document.type';
 import { Exclude, Expose } from 'class-transformer';
 
