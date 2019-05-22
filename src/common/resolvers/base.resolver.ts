@@ -5,6 +5,7 @@ import { Repository, FindConditions, FindManyOptions } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
 import { upperFirst } from 'lodash';
 import { IsAuthenticated } from '../../auth/guards/authenticated';
+import { PaginationArgs } from '../object-types/pagination.input';
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
 export interface BaseResolverOptions {
@@ -57,9 +58,12 @@ export function createBaseResolver<T extends ClassType, U>(
     }
 
     @Query(() => [objectTypeCls], { name: `${pluralName()}` })
-    async find(args: FindManyOptions<T> | FindConditions<T>): Promise<T[]> {
-      // TODO: arguments are not working
-      return await this.repository.find(args);
+    async find(
+      @Args({ name: 'pagination', type: () => PaginationArgs, nullable: true })
+      pagination?: PaginationArgs,
+    ): Promise<T[]> {
+      // TODO: implement pagination
+      return await this.repository.find();
     }
 
     @Mutation(() => objectTypeCls, { name: `upsert${upperFirst(name)}` })

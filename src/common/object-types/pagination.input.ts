@@ -1,7 +1,7 @@
-import { ArgsType, Field, Int } from 'type-graphql';
+import { Field, Int, InputType } from 'type-graphql';
 import { Min, Max } from 'class-validator';
 
-@ArgsType()
+@InputType()
 export class PaginationArgs {
   @Field(type => Int)
   @Min(0)

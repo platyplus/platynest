@@ -1,11 +1,11 @@
 import { UseInterceptors } from '@nestjs/common';
 import { User } from './user.entity';
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver, Query, Args } from '@nestjs/graphql';
 import { UserInput } from './user.input';
 import { RoleInterceptor } from './role.interceptor';
 import { createBaseResolver } from '../common/resolvers/base.resolver';
 import { Profile } from '../auth/decorators/profile.decorator';
-import { FindConditions, FindManyOptions } from 'typeorm';
+import { PaginationArgs } from 'src/common/object-types/pagination.input';
 
 const UserBaseResolver = createBaseResolver('user', User, UserInput);
 
@@ -15,8 +15,9 @@ export class UserResolver extends UserBaseResolver {
   @Query(() => [User], { name: `users` })
   async find(
     @Profile() user: User,
-    args: FindManyOptions<User> | FindConditions<User>,
+    @Args({ name: 'pagination', type: () => PaginationArgs, nullable: true })
+    pagination?: PaginationArgs,
   ): Promise<User[]> {
-    return super.find(args);
+    return super.find(pagination);
   }
 }
