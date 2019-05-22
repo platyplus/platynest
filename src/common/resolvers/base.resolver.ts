@@ -1,19 +1,13 @@
 import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
-import { Repository, FindConditions, FindManyOptions } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
 import { upperFirst } from 'lodash';
 import { IsAuthenticated } from '../../auth/guards/authenticated';
 import { PaginationArgs } from '../object-types/pagination.input';
+import { BaseResolverOptions, pluralName } from '.';
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
-
-export interface BaseResolverOptions {
-  /**
-   * Specifies the plural
-   */
-  plural?: string;
-}
 
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 /**
@@ -35,8 +29,6 @@ export function createBaseResolver<T extends ClassType, U>(
   inputTypeCls: U,
   options?: BaseResolverOptions,
 ) {
-  const pluralName = () => (options && options.plural) || `${name}s`;
-
   @Injectable()
   @Resolver(() => objectTypeCls, { isAbstract: true })
   @UseGuards(IsAuthenticated)
@@ -57,7 +49,7 @@ export function createBaseResolver<T extends ClassType, U>(
       return item;
     }
 
-    @Query(() => [objectTypeCls], { name: `${pluralName()}` })
+    @Query(() => [objectTypeCls], { name: `${pluralName(name, options)}` })
     async find(
       @Args({ name: 'pagination', type: () => PaginationArgs, nullable: true })
       pagination?: PaginationArgs,

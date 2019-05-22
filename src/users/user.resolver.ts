@@ -3,7 +3,7 @@ import { User } from './user.entity';
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { UserInput } from './user.input';
 import { RoleInterceptor } from './role.interceptor';
-import { createBaseResolver } from '../common/resolvers/base.resolver';
+import { createBaseResolver } from '../common/resolvers';
 import { Profile } from '../auth/decorators/profile.decorator';
 import { PaginationArgs } from '../common/object-types/pagination.input';
 

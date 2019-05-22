@@ -29,7 +29,7 @@ export class User extends Resource {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  @Expose({ groups: ['service', 'admin'] })
+  @Expose({ groups: ['service', 'admin', 'owner'] })
   lastName: string;
 
   @BeforeInsert()
