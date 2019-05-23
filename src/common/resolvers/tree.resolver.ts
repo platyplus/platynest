@@ -1,10 +1,10 @@
-import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { Resolver, Query, Args } from '@nestjs/graphql';
 import { EntityManager, TreeRepository } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
-import { IsAuthenticated } from '../../auth/guards/authenticated';
 import { BaseResolverOptions, createBaseResolver } from '.';
+import { IsAuthenticated } from '../../auth/guards/authenticated';
 
 export function createTreeResolver<T extends ClassType, U>(
   name: string,
@@ -21,6 +21,7 @@ export function createTreeResolver<T extends ClassType, U>(
 
   @Injectable()
   @Resolver(() => objectTypeCls, { isAbstract: true })
+  @UseGuards(IsAuthenticated)
   abstract class TreeResolver extends BaseResolver {
     private treeRepository: TreeRepository<T>;
     constructor(
@@ -54,7 +55,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async findDescendants(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T[]> {
-      const parent = await this.manager.getRepository(objectTypeCls).findOne(id);
+      const parent = await this.treeRepository.findOne(id);
       if (!parent) {
         throw new NotFoundException(id);
       }
@@ -67,11 +68,11 @@ export function createTreeResolver<T extends ClassType, U>(
     /**
      * Gets all children (descendants) of the given entity. Returns them in a tree - nested into each other.
      */
-    @Query(() => [objectTypeCls], { name: `${name}DescendantsTree` })
+    @Query(() => objectTypeCls, { name: `${name}DescendantsTree` })
     async findDescendantsTree(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T> {
-      const parent = await this.manager.getRepository(objectTypeCls).findOne(id);
+      const parent = await this.treeRepository.findOne(id);
       if (!parent) {
         throw new NotFoundException(id);
       }
@@ -85,7 +86,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async findAncestors(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T[]> {
-      const child = await this.manager.getRepository(objectTypeCls).findOne(id);
+      const child = await this.treeRepository.findOne(id);
       if (!child) {
         throw new NotFoundException(id);
       }
@@ -95,11 +96,11 @@ export function createTreeResolver<T extends ClassType, U>(
     /**
      * Returns all trees in the database with all their children, children of children, etc.
      */
-    @Query(() => [objectTypeCls], { name: `${name}AncestorsTree` })
+    @Query(() => objectTypeCls, { name: `${name}AncestorsTree` })
     async AncestorsTree(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T> {
-      const child = await this.manager.getRepository(objectTypeCls).findOne(id);
+      const child = await this.treeRepository.findOne(id);
       if (!child) {
         throw new NotFoundException(id);
       }

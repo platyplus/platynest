@@ -1,10 +1,10 @@
-import { ObjectType, ID, Field } from 'type-graphql';
+import { ObjectType, ID, Field, Int } from 'type-graphql';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  BeforeUpdate,
   BaseEntity,
+  VersionColumn,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
 
@@ -26,8 +26,8 @@ export abstract class Resource extends BaseEntity {
   @Expose()
   updatedAt: Date;
 
-  @BeforeUpdate()
-  updateDates() {
-    this.updatedAt = new Date();
-  }
+  @VersionColumn()
+  @Field(type => Int)
+  @Expose()
+  version: number;
 }
