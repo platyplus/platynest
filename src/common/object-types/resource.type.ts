@@ -1,10 +1,16 @@
 import { ObjectType, ID, Field } from 'type-graphql';
-import { Column, Entity, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  BeforeUpdate,
+  BaseEntity,
+} from 'typeorm';
 import { Expose } from 'class-transformer';
 
 @Entity()
 @ObjectType({ isAbstract: true })
-export abstract class Resource {
+export abstract class Resource extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   @Field(type => ID)
   @Expose()

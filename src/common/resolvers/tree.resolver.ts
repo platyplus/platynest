@@ -58,6 +58,9 @@ export function createTreeResolver<T extends ClassType, U>(
       if (!parent) {
         throw new NotFoundException(id);
       }
+      // TODO: create generic custom repository with .findOne + exception if not found
+      // TODO: or catch the exception?
+      // See: https://typeorm.io/#/custom-repository
       return await this.treeRepository.findDescendants(parent);
     }
 
