@@ -17,6 +17,7 @@ export class User extends Resource {
    */
   email: string;
 
+  @Expose({ groups: ['service'] })
   password: string;
 
   @Column({ nullable: true })

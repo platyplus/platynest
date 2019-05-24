@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   async signUp(payload: SignUpDto): Promise<string> {
-    const user = plainToClass(User, payload);
+    const user = plainToClass(User, payload, { groups: ['service'] });
     await this.userService.saveProfile(user);
     return this.sign(user);
   }

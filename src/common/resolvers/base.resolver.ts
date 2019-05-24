@@ -42,11 +42,7 @@ export function createBaseResolver<T extends ClassType, U>(
     async findOneById(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T> {
-      const item = await this.repository.findOne(id);
-      if (!item) {
-        throw new NotFoundException(id);
-      }
-      return item;
+      return await this.repository.findOneOrFail(id);
     }
 
     @Query(() => [objectTypeCls], { name: `${pluralName(name, options)}` })
@@ -70,7 +66,8 @@ export function createBaseResolver<T extends ClassType, U>(
         The this.repository.save() does not retrieve the properties that
         have not been changed in the input */
         item =
-          (await this.repository.findOne({ where: { id: input.id } })) || item;
+          (await this.repository.findOneOrFail({ where: { id: input.id } })) ||
+          item;
       }
       Object.assign(item, input);
       item = await this.repository.save(item);

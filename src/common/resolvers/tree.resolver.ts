@@ -55,10 +55,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async findDescendants(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T[]> {
-      const parent = await this.treeRepository.findOne(id);
-      if (!parent) {
-        throw new NotFoundException(id);
-      }
+      const parent = await this.treeRepository.findOneOrFail(id);
       // TODO: create generic custom repository with .findOne + exception if not found
       // TODO: or catch the exception?
       // See: https://typeorm.io/#/custom-repository
@@ -72,10 +69,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async findDescendantsTree(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T> {
-      const parent = await this.treeRepository.findOne(id);
-      if (!parent) {
-        throw new NotFoundException(id);
-      }
+      const parent = await this.treeRepository.findOneOrFail(id);
       return await this.treeRepository.findDescendantsTree(parent);
     }
 
@@ -86,10 +80,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async findAncestors(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T[]> {
-      const child = await this.treeRepository.findOne(id);
-      if (!child) {
-        throw new NotFoundException(id);
-      }
+      const child = await this.treeRepository.findOneOrFail(id);
       return await this.treeRepository.findAncestors(child);
     }
 
@@ -100,10 +91,7 @@ export function createTreeResolver<T extends ClassType, U>(
     async AncestorsTree(
       @Args({ name: 'id', type: () => ID }) id: string,
     ): Promise<T> {
-      const child = await this.treeRepository.findOne(id);
-      if (!child) {
-        throw new NotFoundException(id);
-      }
+      const child = await this.treeRepository.findOneOrFail(id);
       return await this.treeRepository.findAncestorsTree(child);
     }
 

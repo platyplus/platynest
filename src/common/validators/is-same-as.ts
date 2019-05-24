@@ -4,7 +4,7 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-/**
+/** TODO: kept as an example but not used anymore
  * Validation decorator:
  * field1: string
  * @IsSameAs('field1')
