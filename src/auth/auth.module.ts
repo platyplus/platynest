@@ -9,6 +9,7 @@ import { UserService } from '../users/user.service';
 import { UniqueUserConstraint } from './validators/unique-user.validator';
 import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
+import { AuthResolver } from './auth.resolver';
 
 @Module({
   imports: [
@@ -21,6 +22,12 @@ import { ConfigService } from '../config/config.service';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, UserService, UniqueUserConstraint],
+  providers: [
+    AuthService,
+    AuthResolver,
+    JwtStrategy,
+    UserService,
+    UniqueUserConstraint,
+  ],
 })
 export class AuthModule {}

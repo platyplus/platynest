@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { IsAuthenticated } from './guards/authenticated';
 import { SignInDto } from './dto/signin.dto';
 import { SignUpDto } from './dto/signup.dto';
+import { Profile } from './decorators/profile.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -10,23 +11,23 @@ export class AuthController {
 
   @Get('token')
   @UseGuards(IsAuthenticated)
-  async createToken(@Req() req): Promise<any> {
-    return this.authService.sign(req.user);
+  async createToken(@Profile() user): Promise<any> {
+    return this.authService.sign(user);
   }
 
   @Get('data')
   @UseGuards(IsAuthenticated)
-  findAll(@Req() req) {
-    console.log(req.user);
+  async findAll(@Profile() user) {
+    return [];
   }
 
   @Post('signin')
-  signin(@Body() SigninDto: SignInDto): Promise<any> {
-    return this.authService.signIn(SigninDto);
+  async signin(@Body() credendials: SignInDto): Promise<any> {
+    return await this.authService.signIn(credendials);
   }
 
   @Post('signup')
-  signup(@Body() signUpDto: SignUpDto): Promise<any> {
-    return this.authService.signUp(signUpDto);
+  async signup(@Body() signUpDto: SignUpDto): Promise<any> {
+    return await this.authService.signUp(signUpDto);
   }
 }
