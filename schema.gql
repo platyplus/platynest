@@ -9,9 +9,8 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 scalar DateTime
 
 type Mutation {
-  upsertOrgUnit: OrgUnit!
-  upsertUser: User!
-  signin(credentials: SignInDto!): String!
+  upsertOrgUnit(input: OrgUnitInput!): OrgUnit!
+  upsertUser(input: UserInput!): User!
   signIn(credentials: SignInDto!): String!
 }
 
@@ -39,9 +38,9 @@ input PaginationArgs {
 }
 
 type Query {
-  orgUnit: OrgUnit!
-  orgUnits: [OrgUnit!]!
-  user: User!
+  orgUnit(id: ID!): OrgUnit!
+  orgUnits(pagination: PaginationArgs): [OrgUnit!]!
+  user(id: ID!): User!
   users(pagination: PaginationArgs): [User!]!
   token: String!
   orgUnitTrees: [OrgUnit!]!
