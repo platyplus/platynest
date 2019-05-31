@@ -47,11 +47,12 @@ export function createBaseResolver<T extends ClassType, U>(
 
     @Query(() => [objectTypeCls], { name: `${pluralName(name, options)}` })
     async find(
+      // @Profile() user: User,
       @Args({ name: 'pagination', type: () => PaginationArgs, nullable: true })
       pagination?: PaginationArgs,
     ): Promise<T[]> {
       // TODO: implement pagination
-      return await this.repository.find();
+      return await this.repository.find(pagination);
     }
 
     @Mutation(() => objectTypeCls, { name: `upsert${upperFirst(name)}` })

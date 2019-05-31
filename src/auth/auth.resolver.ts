@@ -15,7 +15,7 @@ export class AuthResolver {
     return await this.authService.sign(user);
   }
 
-  @Mutation(() => String, { name: `signin` })
+  @Mutation(() => String, { name: `signIn` })
   async signIn(@Args('credentials') credendials: SignInDto): Promise<string> {
     return await this.authService.signIn(credendials);
   }

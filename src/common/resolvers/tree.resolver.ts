@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
-import { InjectEntityManager } from '@nestjs/typeorm';
+import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { Resolver, Query, Args } from '@nestjs/graphql';
-import { EntityManager, TreeRepository } from 'typeorm';
+import { EntityManager, TreeRepository, Repository } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
 import { BaseResolverOptions, createBaseResolver } from '.';
 import { IsAuthenticated } from '../../auth/guards/authenticated';
@@ -20,15 +20,15 @@ export function createTreeResolver<T extends ClassType, U>(
   );
 
   @Injectable()
-  @Resolver(() => objectTypeCls, { isAbstract: true })
-  @UseGuards(IsAuthenticated)
   abstract class TreeResolver extends BaseResolver {
     private treeRepository: TreeRepository<T>;
     constructor(
       @InjectEntityManager()
       private readonly manager: EntityManager,
+      @InjectRepository(objectTypeCls)
+      private readonly repository: Repository<T>,
     ) {
-      super();
+      super(repository);
       this.treeRepository = manager.getTreeRepository(objectTypeCls);
     }
 
