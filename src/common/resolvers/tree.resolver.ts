@@ -1,23 +1,15 @@
-import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Query, Args } from '@nestjs/graphql';
 import { EntityManager, TreeRepository, Repository } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
 import { BaseResolverOptions, createBaseResolver } from '.';
-import { IsAuthenticated } from '../../auth/guards/authenticated';
-
-export function createTreeResolver<T extends ClassType, U>(
+export function createTreeResolver<T extends ClassType>(
   name: string,
   objectTypeCls: T,
-  inputTypeCls: U,
   options?: BaseResolverOptions,
 ) {
-  const BaseResolver = createBaseResolver(
-    name,
-    objectTypeCls,
-    inputTypeCls,
-    options,
-  );
+  const BaseResolver = createBaseResolver(name, objectTypeCls, options);
 
   @Injectable()
   abstract class TreeResolver extends BaseResolver {

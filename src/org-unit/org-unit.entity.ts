@@ -1,11 +1,5 @@
-import { Field, ObjectType, Int } from 'type-graphql';
-import {
-  Entity,
-  Tree,
-  TreeParent,
-  TreeChildren,
-  TreeLevelColumn,
-} from 'typeorm';
+import { Field, ObjectType } from 'type-graphql';
+import { Entity, Tree, TreeParent, TreeChildren } from 'typeorm';
 import { Document } from '../common/object-types/document.type';
 import { Exclude, Expose } from 'class-transformer';
 
@@ -23,9 +17,9 @@ export class OrgUnit extends Document {
   @Field(type => OrgUnit, { nullable: true })
   @Expose()
   parent: OrgUnit;
-
-  @TreeLevelColumn()
-  @Field(type => Int)
-  @Expose()
-  level: number;
+  // TODO: not working: https://github.com/typeorm/typeorm/issues/1667
+  // @TreeLevelColumn()
+  // @Field(type => Int)
+  // @Expose()
+  // level: number;
 }

@@ -1,13 +1,12 @@
-import { Injectable, UseGuards, NotFoundException } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
+import { Query, Resolver, Args } from '@nestjs/graphql';
 import { Repository } from 'typeorm';
 import { ClassType, ID } from 'type-graphql';
 import { upperFirst } from 'lodash';
 import { IsAuthenticated } from '../../auth/guards/authenticated';
 import { PaginationArgs } from '../object-types/pagination.input';
 import { BaseResolverOptions, pluralName } from '.';
-// const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 
 // const pubSub = new PubSub(); // TODO: https://docs.nestjs.com/graphql/subscriptions
 /**
@@ -23,10 +22,9 @@ import { BaseResolverOptions, pluralName } from '.';
  *
  * See: https://typegraphql.ml/docs/inheritance.html
  */
-export function createBaseResolver<T extends ClassType, U>(
+export function createBaseResolver<T extends ClassType>(
   name: string,
   objectTypeCls: T,
-  inputTypeCls: U,
   options?: BaseResolverOptions,
 ) {
   @Injectable()
@@ -53,27 +51,6 @@ export function createBaseResolver<T extends ClassType, U>(
     ): Promise<T[]> {
       // TODO: implement pagination
       return await this.repository.find(pagination);
-    }
-
-    @Mutation(() => objectTypeCls, { name: `upsert${upperFirst(name)}` })
-    async save(
-      @Args({ name: 'input', type: () => inputTypeCls })
-      input,
-    ) {
-      // TODO: different validion when insert and when update
-      let item = new objectTypeCls();
-      if (input.id) {
-        /* We need to get the initial data if it exists so it is correclty returned.
-        The this.repository.save() does not retrieve the properties that
-        have not been changed in the input */
-        item =
-          (await this.repository.findOneOrFail({ where: { id: input.id } })) ||
-          item;
-      }
-      Object.assign(item, input);
-      item = await this.repository.save(item);
-      // pubSub.publish('userAdded', { userAdded: user });
-      return item;
     }
 
     // @Subscription(returns => User)

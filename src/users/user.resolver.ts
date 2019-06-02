@@ -7,7 +7,7 @@ import { createBaseResolver } from '../common/resolvers';
 import { Profile } from '../auth/decorators/profile.decorator';
 import { PaginationArgs } from '../common/object-types/pagination.input';
 
-const UserBaseResolver = createBaseResolver('user', User, UserInput);
+const UserBaseResolver = createBaseResolver('user', User);
 
 @Resolver(of => User)
 export class UserResolver extends UserBaseResolver {
