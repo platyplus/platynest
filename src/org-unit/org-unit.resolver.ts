@@ -1,4 +1,10 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  ResolveProperty,
+  Parent,
+} from '@nestjs/graphql';
 import { OrgUnit } from './org-unit.entity';
 import { createTreeResolver } from '../common/resolvers';
 import { OrgUnitInput } from './org-unit.input';
@@ -34,5 +40,18 @@ export class OrgUnitResolver extends OrgUnitTreeResolver {
     item = await this.repository.save(item);
     // pubSub.publish('userAdded', { userAdded: user });
     return item;
+  }
+  @ResolveProperty('children', of => [OrgUnit], {
+    defaultValue: [],
+    name: 'children',
+    nullable: true,
+  })
+  async children(@Parent() parent): Promise<OrgUnit[]> {
+    console.log('HEHRE');
+    const { id } = parent;
+    return await this.repository.find({
+      cache: false,
+      where: { parent: { id } },
+    });
   }
 }
